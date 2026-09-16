@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complexidade de Algoritmos no Gerenciamento de Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ======================= BARRA LATERAL / NAVEGAÇÃO ======================= -->
+  <nav class="sidebar" aria-label="Navegação entre tópicos">
+    <p class="sidebar__title">Complexidade de Algoritmos</p>
+    <p class="sidebar__subtitle">no gerenciamento de memória e processos</p>
+
+    <ul class="tabs">
+      <li><button class="tab-btn" data-tab="intro" style="--dot:#0e7c86">
+        <span class="dot"></span> Introdução
+      </button></li>
+      <li><button class="tab-btn" data-tab="o1" style="--dot:#2f9e44">
+        <span class="dot"></span> Constante <span class="tag">O(1)</span>
+      </button></li>
+      <li><button class="tab-btn" data-tab="ologn" style="--dot:#1c7ed6">
+        <span class="dot"></span> Logarítmico <span class="tag">O(log n)</span>
+      </button></li>
+      <li><button class="tab-btn" data-tab="on" style="--dot:#f08c00">
+        <span class="dot"></span> Linear <span class="tag">O(n)</span>
+      </button></li>
+      <li><button class="tab-btn" data-tab="onlogn" style="--dot:#e8590c">
+        <span class="dot"></span> Log-linear <span class="tag">O(n log n)</span>
+      </button></li>
+      <li><button class="tab-btn" data-tab="on2" style="--dot:#c92a2a">
+        <span class="dot"></span> Quadrático <span class="tag">O(n²)</span>
+      </button></li>
+      <li><button class="tab-btn" data-tab="refs" style="--dot:#565f6d">
+        <span class="dot"></span> Referências
+      </button></li>
+    </ul>
+
+    <p class="sidebar__footer">Cada classe usa um algoritmo real de um sistema
+      operacional (escalonamento, alocação de memória ou controle de deadlock)
+      como exemplo, com as fontes citadas na última aba.</p>
+  </nav>
+
+  <!-- ============================ CONTEÚDO ============================ -->
+  <main class="content">
+
+    <!-- ============================ INTRODUÇÃO ============================ -->
+    <section class="panel" id="panel-intro">
+      <p class="panel__eyebrow">visão geral</p>
+      <h1 class="panel__title">Como a notação Big-O explica o comportamento do sistema operacional</h1>
+
+      <section class="block">
+        <h2>O que é notação Big-O</h2>
+        <p>A notação O(n) descreve como o número de operações de um algoritmo
+          cresce à medida que o tamanho da entrada <em>n</em> aumenta. Em um
+          sistema operacional, <em>n</em> costuma ser o número de processos na
+          fila de execução, o número de blocos livres de memória, ou o número
+          de tipos de recurso disponíveis. A classe de complexidade de um
+          algoritmo de escalonamento ou de alocação de memória determina
+          diretamente o quanto o sistema "sente" o crescimento da carga: um
+          escalonador O(n²) pode ficar perceptivelmente mais lento com
+          centenas de processos, enquanto um O(1) não.</p>
+        <p>As cinco classes a seguir aparecem, nessa ordem, do algoritmo mais
+          escalável para o menos escalável.</p>
+      </section>
+
+      <div class="chart-wrap">
+        <img src="Imagem_grafico.png"
+             alt="Gráfico ilustrativo das cinco classes de complexidade"
+             width="800"
+             height="500">
+      </div>
+
+      <section class="block">
+        <h2>Resumo das cinco classes</h2>
+        <table class="summary-table">
+          <thead>
+            <tr><th>Classe</th><th>Nome</th><th>Exemplo no SO usado nesta apresentação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="notation">O(1)</td><td>Constante</td><td>Escalonador O(1) do kernel Linux (2.6–2.6.22)</td></tr>
+            <tr><td class="notation">O(log n)</td><td>Logarítmico</td><td>Árvore rubro-negra do Completely Fair Scheduler (CFS)</td></tr>
+            <tr><td class="notation">O(n)</td><td>Linear</td><td>Alocador de memória por lista livre (free list)</td></tr>
+            <tr><td class="notation">O(n log n)</td><td>Log-linear</td><td>Ordenação externa (external merge sort) em memória virtual</td></tr>
+            <tr><td class="notation">O(n²)</td><td>Quadrático</td><td>Algoritmo de segurança do Algoritmo do Banqueiro</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- ============================== O(1) ============================== -->
+    <section class="panel" id="panel-o1">
+      <p class="panel__eyebrow">classe 1 de 5</p>
+      <h1 class="panel__title">O(1) — Tempo Constante</h1>
+
+      <div class="meta-row">
+        <span class="meta-chip">Classe: <strong>O(1)</strong></span>
+        <span class="meta-chip">Área: <strong>gerenciamento de processos</strong></span>
+        <span class="meta-chip">Algoritmo: <strong>escalonador O(1) do Linux</strong></span>
+      </div>
+
+      <section class="block">
+        <h2>Definição</h2>
+        <p>Um algoritmo é O(1) quando o número de operações que ele executa
+          não depende do tamanho da entrada <em>n</em>. Dobrar, multiplicar
+          por dez ou por mil o número de processos ou de recursos não muda o
+          número de passos necessários — o gráfico é uma linha horizontal.</p>
+      </section>
+
+      <div class="chart-wrap">
+        <canvas id="chart-o1" height="90"></canvas>
+      </div>
+
+      <section class="block">
+        <h2>Exemplo real: escalonador O(1) do kernel Linux</h2>
+        <p>Entre as versões 2.6 e 2.6.22 do kernel Linux, o escalonador de
+          processos foi reprojetado para decidir qual tarefa executar em
+          tempo constante, qualquer que fosse o número de processos no
+          sistema. Ele mantém, para cada nível de prioridade, um vetor de
+          tarefas <em>ativas</em> e um de tarefas <em>expiradas</em>, além de
+          um <em>bitmap</em> de prioridades ocupadas. Encontrar a tarefa de
+          maior prioridade é uma busca no bitmap (tamanho fixo) e trocar os
+          dois vetores, quando o tempo de todas as tarefas ativas se esgota,
+          é apenas a troca de dois ponteiros — nenhuma dessas operações
+          percorre a lista de processos.</p>
+        <pre class="code"><span class="cm">// ideia simplificada do escalonador O(1)</span>
+<span class="kw">estrutura</span> RunQueue {
+    array<Tarefa> ativos[140]     <span class="cm">// 140 níveis de prioridade</span>
+    array<Tarefa> expirados[140]
+    bitmap prioridades_ocupadas   <span class="cm">// 1 bit por nível</span>
+}
+
+<span class="fn">escolherProximaTarefa</span>(fila):
+    nivel <- primeiro_bit_ligado(fila.prioridades_ocupadas)  <span class="cm">// O(1)</span>
+    retorna fila.ativos[nivel].topo()                        <span class="cm">// O(1)</span>
+
+<span class="fn">trocarFilas</span>(fila):
+    swap(fila.ativos, fila.expirados)  <span class="cm">// troca de ponteiros, O(1)</span></pre>
+      </section>
+
+      <section class="block">
+        <h2>Outro exemplo: alocadores de memória segregados (TLSF)</h2>
+        <p>Do lado da memória, alocadores de "segregated free list" — como o
+          <strong>TLSF (Two-Level Segregated Fit)</strong>, usado em sistemas
+          embarcados e de tempo real — mantêm uma lista livre separada por
+          faixa de tamanho, indexada por uma pequena tabela de bits. Isso faz
+          com que tanto a alocação quanto a mesclagem (coalescência) de
+          blocos livres aconteçam em tempo constante, mesmo com milhares de
+          blocos livres no heap.</p>
+      </section>
+
+      <section class="block verdict" style="--dot:#2f9e44; --dot-bg:var(--c-o1-bg)">
+        <h2>É possível melhorar essa classe?</h2>
+        <p>Assintoticamente, não existe classe mais eficiente que O(1). O que
+          pode (e costuma) ser otimizado é o <em>custo constante</em> em si —
+          menos instruções, menos cache-misses. Curiosamente, a própria
+          história do kernel Linux mostra o caminho contrário: o escalonador
+          O(1) foi <strong>substituído</strong> pelo Completely Fair Scheduler,
+          que é O(log n). Isso aconteceu porque o critério deixou de ser
+          apenas "decidir rápido" e passou a ser "decidir de forma justa e
+          previsível" — o algoritmo O(1) usava heurísticas complexas para
+          estimar se um processo era interativo, e essas heurísticas eram
+          frágeis. Ou seja: uma classe assintótica melhor nem sempre é o
+          objetivo certo quando a qualidade da decisão importa mais que a
+          velocidade bruta.</p>
+      </section>
+    </section>
+
+    <!-- ============================ O(log n) ============================ -->
+    <section class="panel" id="panel-ologn">
+      <p class="panel__eyebrow">classe 2 de 5</p>
+      <h1 class="panel__title">O(log n) — Tempo Logarítmico</h1>
+
+      <div class="meta-row">
+        <span class="meta-chip">Classe: <strong>O(log n)</strong></span>
+        <span class="meta-chip">Área: <strong>gerenciamento de processos e memória</strong></span>
+        <span class="meta-chip">Algoritmo: <strong>árvore rubro-negra do CFS</strong></span>
+      </div>
+
+      <section class="block">
+        <h2>Definição</h2>
+        <p>Um algoritmo é O(log n) quando cada operação elimina uma fração
+          fixa (normalmente metade) das possibilidades restantes. É típico
+          de estruturas de dados organizadas em árvore balanceada, onde
+          inserir, remover ou buscar um elemento custa, no pior caso, a
+          altura da árvore — proporcional a log₂(n).</p>
+      </section>
+
+      <div class="chart-wrap">
+        <canvas id="chart-ologn" height="90"></canvas>
+      </div>
+
+      <section class="block">
+        <h2>Exemplo real: Completely Fair Scheduler (CFS) do Linux</h2>
+        <p>Desde a versão 2.6.23 (e até a 6.6, quando foi sucedido pelo
+          EEVDF), o escalonador padrão do Linux é o <strong>CFS</strong>. Em
+          vez de filas por prioridade, ele guarda todas as tarefas executáveis
+          em uma <strong>árvore rubro-negra</strong> (red-black tree),
+          indexada pelo <em>vruntime</em> — o tempo de CPU "virtual" já
+          consumido por cada tarefa. A tarefa mais à esquerda da árvore é
+          sempre a que recebeu menos tempo de CPU até agora, e é ela que roda
+          em seguida. Inserir uma tarefa, remover a que acabou de rodar e
+          rebalancear a árvore custam O(log n) no número de tarefas
+          executáveis.</p>
+        <pre class="code"><span class="cm">// ideia simplificada do CFS</span>
+<span class="kw">estrutura</span> CfsRunQueue {
+    RedBlackTree tarefas_por_vruntime   <span class="cm">// chave = vruntime</span>
+}
+
+<span class="fn">escolherProximaTarefa</span>(fila):
+    retorna fila.tarefas_por_vruntime.<span class="fn">no_mais_a_esquerda</span>()  <span class="cm">// O(log n)</span>
+
+<span class="fn">aoTerminarFatiaDeTempo</span>(fila, tarefa):
+    tarefa.vruntime += tempo_de_cpu_usado(tarefa)
+    fila.tarefas_por_vruntime.<span class="fn">reinserir</span>(tarefa)             <span class="cm">// O(log n)</span></pre>
+      </section>
+
+      <section class="block">
+        <h2>Outro exemplo: alocador buddy (buddy system)</h2>
+        <p>No gerenciamento de memória, o <strong>alocador buddy</strong>
+          (usado, por exemplo, pelo alocador de páginas físicas do Linux)
+          organiza a memória livre em blocos de tamanho potência de 2.
+          Encontrar e mesclar ("coalescer") um bloco livre com seu par
+          ("buddy") de mesmo tamanho percorre no máximo log₂ do número de
+          níveis de tamanho — também O(log n).</p>
+      </section>
+
+      <section class="block verdict" style="--dot:#1c7ed6; --dot-bg:var(--c-ologn-bg)">
+        <h2>É possível melhorar essa classe?</h2>
+        <p>Parcialmente. A própria implementação do CFS já otimiza a
+          <em>leitura</em> da tarefa de menor vruntime para O(1), guardando
+          em cache um ponteiro para o nó mais à esquerda — só a
+          <em>atualização</em> da árvore continua O(log n), porque manter a
+          estrutura balanceada exige isso. Já no caso de alocadores de
+          memória, é possível trocar o buddy system (O(log n)) por um
+          alocador segregado tipo TLSF, que consegue O(1) à custa de mais
+          fragmentação interna — ou seja, a troca de classe é possível, mas
+          implica um outro tipo de custo (mais memória desperdiçada).</p>
+      </section>
+    </section>
+
+    <!-- ============================== O(n) ============================== -->
+    <section class="panel" id="panel-on">
+      <p class="panel__eyebrow">classe 3 de 5</p>
+      <h1 class="panel__title">O(n) — Tempo Linear</h1>
+
+      <div class="meta-row">
+        <span class="meta-chip">Classe: <strong>O(n)</strong></span>
+        <span class="meta-chip">Área: <strong>gerenciamento de memória</strong></span>
+        <span class="meta-chip">Algoritmo: <strong>alocador por lista livre (free list)</strong></span>
+      </div>
+
+      <section class="block">
+        <h2>Definição</h2>
+        <p>Um algoritmo é O(n) quando o número de operações cresce na mesma
+          proporção que o tamanho da entrada: dobrar <em>n</em> dobra o
+          trabalho. É o comportamento de qualquer algoritmo que precisa, no
+          pior caso, examinar cada elemento da entrada uma única vez.</p>
+      </section>
+
+      <div class="chart-wrap">
+        <canvas id="chart-on" height="90"></canvas>
+      </div>
+
+      <section class="block">
+        <h2>Exemplo real: alocador de memória por lista livre</h2>
+        <p>Em implementações clássicas de alocadores de memória do tipo
+          <em>sequential fit</em> (first-fit, best-fit, worst-fit), a memória
+          livre é organizada como uma lista encadeada de blocos. Para achar
+          um bloco de tamanho suficiente, o alocador percorre a lista do
+          início — no pior caso, até o último bloco. Com <em>n</em> blocos
+          livres, isso é O(n) por alocação.</p>
+        <pre class="code"><span class="cm">// first-fit em uma lista livre encadeada</span>
+<span class="fn">alocar</span>(listaLivre, tamanho):
+    bloco <- listaLivre.primeiro
+    <span class="kw">enquanto</span> bloco != nulo:              <span class="cm">// até n blocos, O(n)</span>
+        <span class="kw">se</span> bloco.tamanho >= tamanho:
+            <span class="kw">retorna</span> reservar(bloco, tamanho)
+        bloco <- bloco.proximo
+    <span class="kw">retorna</span> ERRO_SEM_MEMORIA</pre>
+      </section>
+
+      <section class="block">
+        <h2>Outro exemplo histórico: escalonador O(n) do Linux (2.4–2.6)</h2>
+        <p>Antes do escalonador O(1), o kernel Linux (versões 2.4 a 2.6)
+          usava um escalonador que, a cada decisão, percorria a lista
+          completa de processos executáveis para recalcular prioridades e
+          escolher o próximo a rodar — daí o nome "O(n) scheduler". Com
+          servidores executando centenas de processos, esse custo se tornava
+          perceptível a cada troca de contexto.</p>
+      </section>
+
+      <section class="block verdict" style="--dot:#f08c00; --dot-bg:var(--c-on-bg)">
+        <h2>É possível melhorar essa classe?</h2>
+        <p>Sim, e a história dos sistemas operacionais mostra isso acontecendo
+          duas vezes. Para memória, trocar a lista livre simples por um
+          <strong>alocador buddy</strong> (O(log n)) ou por listas segregadas
+          por tamanho tipo <strong>TLSF</strong> (O(1)) elimina a busca
+          linear, ao custo de estruturas de dados um pouco mais complexas.
+          Para processos, foi exatamente a substituição do escalonador O(n)
+          pelo escalonador O(1), no kernel 2.6, que resolveu esse mesmo
+          problema — reduzindo a complexidade de uma classe inteira para
+          outra.</p>
+      </section>
+    </section>
+
+    <!-- ============================ O(n log n) ============================ -->
+    <section class="panel" id="panel-onlogn">
+      <p class="panel__eyebrow">classe 4 de 5</p>
+      <h1 class="panel__title">O(n log n) — Tempo Log-linear</h1>
+
+      <div class="meta-row">
+        <span class="meta-chip">Classe: <strong>O(n log n)</strong></span>
+        <span class="meta-chip">Área: <strong>gerenciamento de memória</strong></span>
+        <span class="meta-chip">Algoritmo: <strong>ordenação externa (external merge sort)</strong></span>
+      </div>
+
+      <section class="block">
+        <h2>Definição</h2>
+        <p>Um algoritmo é O(n log n) quando combina um custo linear — passar
+          por todos os <em>n</em> elementos — com um fator logarítmico
+          proveniente de dividir o problema em partes menores (como em
+          merge sort ou heapsort). É o limite inferior conhecido para
+          algoritmos de ordenação baseados em comparação.</p>
+      </section>
+
+      <div class="chart-wrap">
+        <canvas id="chart-onlogn" height="90"></canvas>
+      </div>
+
+      <section class="block">
+        <h2>Exemplo real: ordenação externa e gerenciamento de memória virtual</h2>
+        <p>A <strong>ordenação externa</strong> (external merge sort) existe
+          justamente por causa de uma limitação de memória: ela é usada
+          quando o volume de dados a ordenar é maior do que a RAM disponível.
+          O algoritmo divide os dados em blocos ("runs") do tamanho da
+          memória principal, ordena cada bloco internamente (O(n log n)
+          por bloco) e depois faz uma mescla de várias vias (k-way merge)
+          dos blocos já ordenados, usando o disco como extensão da memória —
+          um caso concreto em que o sistema operacional trata o
+          armazenamento secundário como parte do gerenciamento de memória. O
+          custo total permanece O(n log n) comparações, descrito
+          classicamente por Donald Knuth em <em>The Art of Computer
+          Programming, vol. 3 (Sorting and Searching)</em>.</p>
+        <pre class="code"><span class="cm">// ordenação externa (ideia geral)</span>
+<span class="fn">ordenarExterno</span>(arquivo, memoriaDisponivel):
+    runs <- []
+    <span class="kw">enquanto</span> houver dados no arquivo:
+        bloco <- ler(arquivo, memoriaDisponivel)
+        <span class="fn">ordenarNaMemoria</span>(bloco)        <span class="cm">// O(m log m), m = tam. do bloco</span>
+        runs.adicionar(escreverEmDisco(bloco))
+
+    <span class="kw">enquanto</span> runs.tamanho > 1:
+        runs <- <span class="fn">mesclarKaKa</span>(runs)      <span class="cm">// k-way merge, O(n log k)</span>
+    <span class="kw">retorna</span> runs[0]</pre>
+      </section>
+
+      <section class="block verdict" style="--dot:#e8590c; --dot-bg:var(--c-onlogn-bg)">
+        <h2>É possível melhorar essa classe?</h2>
+        <p>Em casos particulares, sim. Quando as chaves a ordenar têm um
+          domínio de valores limitado e conhecido (por exemplo, prioridades
+          de processos com poucos níveis, como no escalonador O(n) antigo),
+          é possível trocar a ordenação por comparação (O(n log n)) por
+          <strong>counting sort</strong> ou <strong>radix sort</strong>, que
+          são O(n) — essa é, inclusive, a ideia por trás dos vetores por
+          nível de prioridade usados no escalonador O(1) do Linux. A
+          limitação é que essa troca só é válida quando o domínio dos dados
+          é pequeno e conhecido de antemão; para chaves arbitrárias (como
+          registros de tamanhos e endereços de memória variados), o limite
+          inferior de O(n log n) por comparação permanece.</p>
+      </section>
+    </section>
+
+    <!-- ============================== O(n²) ============================== -->
+    <section class="panel" id="panel-on2">
+      <p class="panel__eyebrow">classe 5 de 5</p>
+      <h1 class="panel__title">O(n²) — Tempo Quadrático</h1>
+
+      <div class="meta-row">
+        <span class="meta-chip">Classe: <strong>O(n²)</strong></span>
+        <span class="meta-chip">Área: <strong>gerenciamento de processos / recursos</strong></span>
+        <span class="meta-chip">Algoritmo: <strong>Algoritmo do Banqueiro (safety algorithm)</strong></span>
+      </div>
+
+      <section class="block">
+        <h2>Definição</h2>
+        <p>Um algoritmo é O(n²) quando o número de operações cresce com o
+          quadrado do tamanho da entrada — tipicamente porque, para cada um
+          dos <em>n</em> elementos, é preciso compará-lo (ou combiná-lo) com
+          todos os outros <em>n</em> elementos. É a classe mais custosa entre
+          as apresentadas aqui, e a que mais rapidamente se torna
+          impraticável conforme <em>n</em> cresce.</p>
+      </section>
+
+      <div class="chart-wrap">
+        <canvas id="chart-on2" height="90"></canvas>
+      </div>
+
+      <section class="block">
+        <h2>Exemplo real: algoritmo de segurança do Algoritmo do Banqueiro</h2>
+        <p>O <strong>Algoritmo do Banqueiro</strong>, criado por Edsger
+          Dijkstra para o sistema operacional THE, é usado para
+          <strong>evitar deadlocks</strong>: antes de conceder um pedido de
+          recursos, o sistema simula a concessão e verifica se ainda existe
+          uma sequência segura de execução para todos os processos. Essa
+          verificação — o <em>safety algorithm</em> — precisa, no pior caso,
+          repetir <em>n</em> vezes a varredura de todos os <em>n</em>
+          processos (procurando um processo cuja necessidade caiba nos
+          recursos disponíveis), para cada um dos <em>m</em> tipos de
+          recurso. Isso dá uma complexidade de <strong>O(n² × m)</strong>,
+          um exemplo clássico de algoritmo quadrático em livros de sistemas
+          operacionais.</p>
+        <pre class="code"><span class="cm">// safety algorithm do Algoritmo do Banqueiro (resumo)</span>
+<span class="fn">estadoEhSeguro</span>(processos, recursosDisponiveis):
+    trabalho <- copiar(recursosDisponiveis)
+    finalizado <- vetor de falso, tamanho n
+
+    <span class="kw">repita</span> ate n vezes:                       <span class="cm">// laço externo: até n</span>
+        encontrouAlgum <- falso
+        <span class="kw">para cada</span> processo <span class="kw">em</span> processos: <span class="cm">// laço interno: n</span>
+            <span class="kw">se</span> !finalizado[processo] e necessidade[processo] <= trabalho:
+                trabalho += alocado[processo]      <span class="cm">// libera recursos "de volta"</span>
+                finalizado[processo] <- verdadeiro
+                encontrouAlgum <- verdadeiro
+        <span class="kw">se</span> !encontrouAlgum: <span class="kw">pare</span>
+
+    <span class="kw">retorna</span> todos(finalizado)   <span class="cm">// custo total: O(n² · m)</span></pre>
+      </section>
+
+      <section class="block verdict" style="--dot:#c92a2a; --dot-bg:var(--c-on2-bg)">
+        <h2>É possível melhorar essa classe?</h2>
+        <p>Sim — e há pesquisa publicada comprovando isso. O artigo
+          <em>"Banker's Algorithm Optimalization to Dynamically Avoid
+          Deadlock in Operating System"</em> propõe uma estrutura de dados
+          que memoriza sequências seguras já encontradas entre chamadas do
+          alocador, derivando um <strong>teste de segurança O(log n)</strong>
+          para <em>n</em> processos em vez de O(n²). Mais recentemente, o
+          artigo <em>"DBDAA: A real-time approach to Dynamic Banker's
+          Deadlock Avoidance Algorithm"</em> (PLOS One, 2024) propõe incluir
+          processos dinamicamente na verificação de segurança, reduzindo o
+          número de comparações necessárias e levando a complexidade de
+          <strong>O(n²·d)</strong> (algoritmo original) para
+          <strong>O(n·d)</strong> no pior caso e <strong>O(n)</strong> no
+          melhor caso. Isso mostra que o Algoritmo do Banqueiro "clássico" é
+          O(n²) por causa da sua estrutura de dados original (matrizes
+          percorridas por varredura completa), mas reformulações do
+          algoritmo — usando estruturas auxiliares que evitam recomeçar a
+          verificação do zero a cada chamada — conseguem reduzir a
+          complexidade para uma classe inferior.</p>
+      </section>
+    </section>
+
+    <!-- ============================ REFERÊNCIAS ============================ -->
+    <section class="panel" id="panel-refs">
+      <p class="panel__eyebrow">fontes</p>
+      <h1 class="panel__title">Referências</h1>
+
+      <section class="block">
+        <h2>O(1) — escalonador O(1) / alocadores segregados</h2>
+        <ul class="refs">
+          <li><a href="https://en.wikipedia.org/wiki/O(1)_scheduler" target="_blank" rel="noopener">O(1) scheduler — Wikipedia</a>
+            <span class="src">en.wikipedia.org/wiki/O(1)_scheduler</span></li>
+          <li><a href="https://arxiv.org/pdf/2511.10258" target="_blank" rel="noopener">Workload Schedulers — Genesis, Algorithms and Differences</a>
+            <span class="src">arxiv.org/pdf/2511.10258 — histórico dos escalonadores O(n), O(1) e CFS no Linux</span></li>
+          <li><a href="https://arxiv.org/pdf/2405.07079" target="_blank" rel="noopener">Host-Based Allocators for Device Memory</a>
+            <span class="src">arxiv.org/pdf/2405.07079 — TLSF e alocação O(1) por listas segregadas</span></li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>O(log n) — Completely Fair Scheduler / alocador buddy</h2>
+        <ul class="refs">
+          <li><a href="https://docs.kernel.org/scheduler/sched-design-CFS.html" target="_blank" rel="noopener">CFS Scheduler — The Linux Kernel documentation</a>
+            <span class="src">docs.kernel.org/scheduler/sched-design-CFS.html — documentação oficial do kernel</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler" target="_blank" rel="noopener">Completely Fair Scheduler — Wikipedia</a>
+            <span class="src">en.wikipedia.org/wiki/Completely_Fair_Scheduler</span></li>
+          <li><a href="https://github.com/evanw/buddy-malloc" target="_blank" rel="noopener">buddy-malloc — implementação de referência</a>
+            <span class="src">github.com/evanw/buddy-malloc — malloc/free em O(log n)</span></li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>O(n) — alocador por lista livre / escalonador O(n)</h2>
+        <ul class="refs">
+          <li><a href="https://www.gingerbill.org/article/2021/11/30/memory-allocation-strategies-005/" target="_blank" rel="noopener">Memory Allocation Strategies — Part 5: Free List Allocator</a>
+            <span class="src">gingerbill.org — busca O(N) em lista livre encadeada</span></li>
+          <li><a href="https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Buddy.html" target="_blank" rel="noopener">Buddy Method and Other Memory Allocation Methods — CS3 Data Structures &amp; Algorithms</a>
+            <span class="src">opendsa-server.cs.vt.edu — comparação entre sequential fit O(n) e buddy system</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/O(n)_scheduler" target="_blank" rel="noopener">O(n) scheduler — Wikipedia</a>
+            <span class="src">en.wikipedia.org/wiki/O(n)_scheduler</span></li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>O(n log n) — ordenação externa</h2>
+        <ul class="refs">
+          <li><a href="https://www.geeksforgeeks.org/dsa/external-sorting/" target="_blank" rel="noopener">External Sorting — GeeksforGeeks</a>
+            <span class="src">geeksforgeeks.org/dsa/external-sorting</span></li>
+          <li><a href="https://en.algorithmica.org/hpc/external-memory/sorting/" target="_blank" rel="noopener">External Sorting — Algorithmica</a>
+            <span class="src">en.algorithmica.org/hpc/external-memory/sorting — análise formal O(n log n)</span></li>
+          <li><a href="https://arxiv.org/pdf/1504.06501" target="_blank" rel="noopener">Run Generation Revisited: What Goes Up May or May Not Come Down</a>
+            <span class="src">arxiv.org/pdf/1504.06501 — modelo de memória externa (DAM) para ordenação</span></li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>O(n²) — Algoritmo do Banqueiro e suas otimizações</h2>
+        <ul class="refs">
+          <li><a href="https://en.wikipedia.org/wiki/Banker%27s_algorithm" target="_blank" rel="noopener">Banker's algorithm — Wikipedia</a>
+            <span class="src">en.wikipedia.org/wiki/Banker's_algorithm</span></li>
+          <li><a href="https://www.geeksforgeeks.org/operating-systems/program-bankers-algorithm-set-1-safety-algorithm/" target="_blank" rel="noopener">Program for Banker's Algorithm — Safety Algorithm — GeeksforGeeks</a>
+            <span class="src">geeksforgeeks.org — complexidade O(n·n·m)</span></li>
+          <li><a href="https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0310807" target="_blank" rel="noopener">DBDAA: A real-time approach to Dynamic Banker's Deadlock Avoidance Algorithm — PLOS One (2024)</a>
+            <span class="src">journals.plos.org — reduz O(n²·d) para O(n·d) / O(n)</span></li>
+          <li><a href="https://www.academia.edu/106403143/Bankers_Algorithm_Optimalization_to_Dynamically_Avoid_Deadlock_in_Operating_System" target="_blank" rel="noopener">Banker's Algorithm Optimalization to Dynamically Avoid Deadlock in Operating System</a>
+            <span class="src">academia.edu — deriva um teste de segurança O(log n)</span></li>
+        </ul>
+      </section>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
